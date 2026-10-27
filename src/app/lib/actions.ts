@@ -2,6 +2,7 @@
 
 import path from "node:path";
 import { createClient } from "@supabase/supabase-js";
+import { checkSize } from "@/app/lib/limits";
 
 // File types that can be saved. Add more extensions here if needed.
 const ALLOWED = [
@@ -13,6 +14,10 @@ export async function saveFile(file: File, filename: string) {
   if (!file?.size) {
     return "Choose a file first.";
   }
+
+  // Images up to 4 MB, other files up to 25 MB.
+  const sizeError = checkSize(file);
+  if (sizeError) return sizeError;
 
   const ext = path.extname(file.name).toLowerCase();
   // if (!ALLOWED.includes(ext)) {

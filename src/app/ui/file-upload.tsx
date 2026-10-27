@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { saveFile } from "@/app/lib/actions";
+import { checkSize } from "@/app/lib/limits";
 import SaveForm, { extensionOf } from "@/app/ui/save-form";
 
 export default function FileUpload() {
@@ -13,6 +14,14 @@ export default function FileUpload() {
 
   function pick(picked: File | undefined) {
     if (!picked) return;
+
+    // Images up to 4 MB, other files up to 25 MB. Reject before uploading anything.
+    const sizeError = checkSize(picked);
+    if (sizeError) {
+      setMessage(sizeError);
+      return;
+    }
+
     setFile(picked);
     // Start from the original name without its extension, e.g. "report" from "report.pdf".
     setFilename(picked.name.replace(/\.[^.]+$/, ""));
@@ -67,7 +76,7 @@ export default function FileUpload() {
             <span className="text-sm text-foreground">
               Choose a file<span className="hidden sm:inline"> or drag it here</span>
             </span>
-            <span className="text-xs">PDF, PPT, Word, Excel, images</span>
+            <span className="text-xs">Images up to 4 MB · Other files up to 25 MB</span>
           </span>
         )}
         <input

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { saveFile } from "@/app/lib/actions";
+import { checkSize } from "@/app/lib/limits";
 import SaveForm, { extensionOf } from "@/app/ui/save-form";
 
 export default function CameraCapture() {
@@ -54,7 +55,10 @@ export default function CameraCapture() {
           className="hidden"
           onChange={(e) => {
             const picked = e.target.files?.[0];
-            if (picked) {
+            const sizeError = picked && checkSize(picked);
+            if (sizeError) {
+              setMessage(sizeError);
+            } else if (picked) {
               if (preview) URL.revokeObjectURL(preview);
               setFile(picked);
               setPreview(URL.createObjectURL(picked));

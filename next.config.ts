@@ -8,8 +8,8 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   experimental: {
     serverActions: {
-      // Photos and PPTs can be large; the default limit is 1 MB.
-      bodySizeLimit: "50mb",
+      // Files are capped at 25 MB in lib/limits.ts; the extra 2 MB covers upload overhead.
+      bodySizeLimit: "27mb",
     },
   },
   partialPrefetching: true,
